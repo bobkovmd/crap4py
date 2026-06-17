@@ -153,8 +153,24 @@ def count_cc_java_regex(source: str, file_path: str = "") -> List[dict]:
             stripped
         )
         if method_match:
+            candidate = method_match.group(1)
+            # Skip Java keywords that aren't method names
+            java_keywords = {'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'default',
+                           'try', 'catch', 'finally', 'throw', 'throws', 'return', 'break',
+                           'continue', 'new', 'this', 'super', 'class', 'interface', 'enum',
+                           'import', 'package', 'public', 'private', 'protected', 'static',
+                           'abstract', 'final', 'synchronized', 'native', 'strictfp',
+                           'transient', 'volatile', 'extends', 'implements', 'instanceof',
+                           'true', 'false', 'null', 'var', 'record', 'sealed', 'permits',
+                           'yield', 'assert', 'const', 'goto'}
+            if candidate in java_keywords:
+                # Still update brace_count and collect body lines
+                if in_method:
+                    brace_count += stripped.count('{') - stripped.count('}')
+                    method_body_lines.append(stripped)
+                continue
             in_method = True
-            method_name = method_match.group(1)
+            method_name = candidate
             method_line = i + 1
             brace_count = 1
             method_body_lines = []
@@ -290,6 +306,16 @@ def count_cc_ts_regex(source: str, file_path: str = "") -> List[dict]:
             m = pattern.match(stripped)
             if m:
                 method_name = m.group(1)
+                # Skip JS/TS keywords
+                js_keywords = {'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'default',
+                             'try', 'catch', 'finally', 'throw', 'return', 'break', 'continue',
+                             'new', 'this', 'super', 'class', 'interface', 'enum', 'import',
+                             'export', 'from', 'const', 'let', 'var', 'function', 'async',
+                             'await', 'yield', 'typeof', 'instanceof', 'in', 'of', 'delete',
+                             'void', 'with', 'debugger', 'true', 'false', 'null', 'undefined',
+                             'static', 'get', 'set', 'constructor'}
+                if method_name in js_keywords:
+                    break
                 if method_name[0].isupper() and kind != 'function':
                     continue
 

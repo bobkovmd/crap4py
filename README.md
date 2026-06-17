@@ -22,50 +22,47 @@ Where:
 | 5–30 | MODERATE | Refactor or add tests |
 | 30+ | HIGH | Complex and under-tested — prioritize |
 
-## Installation
+## Quick Start
 
 ```bash
-pip install -r requirements.txt
-```
+# Clone
+git clone https://github.com/bobkovmd/crap4py.git
+cd crap4py
 
-## Usage
+# Install dependencies (optional but recommended)
+pip install javalang          # Java AST parsing
+pip install tree-sitter tree-sitter-typescript tree-sitter-javascript  # TS AST parsing
 
-```bash
-# Java project
-python3 crap4py.py /path/to/project --lang java
+# Run on Java project
+python3 crap4py.py /path/to/java/project --lang java
 
-# Java with coverage
+# Run on TypeScript project
+python3 crap4py.py /path/to/ts/project --lang typescript
+
+# With coverage data
 python3 crap4py.py /path/to/project --lang java --coverage-file target/site/jacoco/jacoco.xml
-
-# Java with auto test run
-python3 crap4py.py /path/to/project --lang java --run-tests
-
-# TypeScript project
-python3 crap4py.py /path/to/project --lang typescript
-
-# TypeScript with coverage
 python3 crap4py.py /path/to/project --lang typescript --coverage-file coverage/coverage-final.json
 
+# Auto-run tests and generate coverage
+python3 crap4py.py /path/to/project --lang java --run-tests
+
 # JSON output
-python3 crap4py.py /path/to/project --lang java --json > report.json
+python3 crap4py.py /path/to/project --lang java --json
 
 # Top 20 worst methods
 python3 crap4py.py /path/to/project --lang java --top 20
-
-# Only changed files
-python3 crap4py.py /path/to/project --lang java --changed-only
 ```
 
-## Coverage Formats
+## Installation
 
-| Language | Format | File |
-|----------|--------|------|
-| Java | JaCoCo XML | `target/site/jacoco/jacoco.xml` |
-| Java | JaCoCo (Gradle) | `build/reports/jacoco/test/jacocoTestReport.xml` |
-| TypeScript | Istanbul/NYC JSON | `coverage/coverage-final.json` |
-| TypeScript | LCOV | `coverage/lcov.info` |
+```bash
+# No required dependencies — works with regex fallback
+# For better accuracy:
+pip install javalang
+pip install tree-sitter tree-sitter-typescript tree-sitter-javascript
+```
 
-## CLI Options
+## Usage
 
 ```
 positional arguments:
@@ -85,16 +82,25 @@ optional arguments:
   --no-tree-sitter     Use regex instead of tree-sitter for TypeScript
 ```
 
+## Coverage Formats
+
+| Language | Format | File |
+|----------|--------|------|
+| Java | JaCoCo XML | `target/site/jacoco/jacoco.xml` |
+| Java | JaCoCo (Gradle) | `build/reports/jacoco/test/jacocoTestReport.xml` |
+| TypeScript | Istanbul/NYC JSON | `coverage/coverage-final.json` |
+| TypeScript | LCOV | `coverage/lcov.info` |
+
 ## Exit Codes
 
 - `0` — success, no high-risk methods
 - `1` — invalid CLI usage
-- `2` — CRAP threshold exceeded (methods with CRAP > threshold)
+- `2` — CRAP threshold exceeded
 
 ## Running Tests
 
 ```bash
-pip install -r requirements-test.txt
+pip install pytest
 python3 -m pytest tests/ -v
 ```
 
