@@ -13,8 +13,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from crap4py import (
     calculate_crap,
     count_cc_java_regex,
-    count_cc_ts_regex,
-    _count_cc_body_generic,
+    count_cc_ts,
+    _count_cc_body,
     parse_jacoco_xml,
     parse_istanbul_json,
     MethodMetric,
@@ -160,7 +160,7 @@ function hello() {
     console.log("hello");
 }
 """
-        methods = count_cc_ts_regex(source, "hello.ts")
+        methods = count_cc_ts(source, "hello.ts")
         assert len(methods) == 1
         assert methods[0]['cc'] == 1
 
@@ -174,7 +174,7 @@ function check(x: number) {
     }
 }
 """
-        methods = count_cc_ts_regex(source, "check.ts")
+        methods = count_cc_ts(source, "check.ts")
         assert len(methods) == 1
         assert methods[0]['cc'] == 2  # base 1 + if
 
@@ -187,7 +187,7 @@ const add = (a: number, b: number) => {
     return b;
 };
 """
-        methods = count_cc_ts_regex(source, "add.ts")
+        methods = count_cc_ts(source, "add.ts")
         assert len(methods) >= 1
 
     def test_switch(self):
@@ -201,7 +201,7 @@ function grade(score: number) {
     }
 }
 """
-        methods = count_cc_ts_regex(source, "grade.ts")
+        methods = count_cc_ts(source, "grade.ts")
         assert len(methods) == 1
         assert methods[0]['cc'] >= 4  # base 1 + 3 cases
 

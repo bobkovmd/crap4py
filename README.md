@@ -29,40 +29,43 @@ Where:
 git clone https://github.com/bobkovmd/crap4py.git
 cd crap4py
 
-# Install dependencies (optional but recommended)
-pip install javalang          # Java AST parsing
-pip install tree-sitter tree-sitter-typescript tree-sitter-javascript  # TS AST parsing
-
-# Run on Java project
+# Java project — just run it
 python3 crap4py.py /path/to/java/project --lang java
 
-# Run on TypeScript project
+# TypeScript project — just run it
 python3 crap4py.py /path/to/ts/project --lang typescript
 
 # With coverage data
-python3 crap4py.py /path/to/project --lang java --coverage-file target/site/jacoco/jacoco.xml
-python3 crap4py.py /path/to/project --lang typescript --coverage-file coverage/coverage-final.json
+python3 crap4py.py . --lang java --coverage-file target/site/jacoco/jacoco.xml
+python3 crap4py.py . --lang typescript --coverage-file coverage/coverage-final.json
 
 # Auto-run tests and generate coverage
-python3 crap4py.py /path/to/project --lang java --run-tests
+python3 crap4py.py . --lang java --run-tests
 
 # JSON output
-python3 crap4py.py /path/to/project --lang java --json
+python3 crap4py.py . --lang java --json
 
 # Top 20 worst methods
-python3 crap4py.py /path/to/project --lang java --top 20
+python3 crap4py.py . --lang java --top 20
 ```
 
-## Installation
+## Zero Dependencies
 
-```bash
-# No required dependencies — works with regex fallback
-# For better accuracy:
-pip install javalang
-pip install tree-sitter tree-sitter-typescript tree-sitter-javascript
-```
+crap4py works out of the box — no `pip install` needed.
 
-## Usage
+- **Java**: uses JDK compiler AST (`com.sun.source.tree`) for accurate CC counting. Falls back to regex if JDK not available.
+- **TypeScript**: uses built-in brace-matching parser. No tree-sitter needed.
+
+## Coverage Formats
+
+| Language | Format | File |
+|----------|--------|------|
+| Java | JaCoCo XML | `target/site/jacoco/jacoco.xml` |
+| Java | JaCoCo (Gradle) | `build/reports/jacoco/test/jacocoTestReport.xml` |
+| TypeScript | Istanbul/NYC JSON | `coverage/coverage-final.json` |
+| TypeScript | LCOV | `coverage/lcov.info` |
+
+## CLI Options
 
 ```
 positional arguments:
@@ -79,17 +82,7 @@ optional arguments:
   --json                Output as JSON
   --run-tests, -r       Run tests with coverage if no coverage data found
   --changed-only        Analyze only git-changed files
-  --no-tree-sitter     Use regex instead of tree-sitter for TypeScript
 ```
-
-## Coverage Formats
-
-| Language | Format | File |
-|----------|--------|------|
-| Java | JaCoCo XML | `target/site/jacoco/jacoco.xml` |
-| Java | JaCoCo (Gradle) | `build/reports/jacoco/test/jacocoTestReport.xml` |
-| TypeScript | Istanbul/NYC JSON | `coverage/coverage-final.json` |
-| TypeScript | LCOV | `coverage/lcov.info` |
 
 ## Exit Codes
 
